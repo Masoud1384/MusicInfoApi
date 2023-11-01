@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -20,6 +21,20 @@ func main() {
 		os.Exit(1)
 	}
 	router := chi.NewRouter()
+	router.Use(
+		cors.Handler(cors.Options{
+			AllowCredentials: false,
+			AllowedHeaders:   []string{"*"},
+			AllowedOrigins:   []string{"https://", "http://"},
+			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			ExposedHeaders:   []string{"LINKS"},
+			MaxAge:           200,
+		}),
+	)
+	v1router := chi.NewRouter()
+	v1router.Get("/testget", responseHealth)
+	router.Mount("/v1", v1router)
+
 	srv := &http.Server{
 		Handler: router,
 		Addr:    ":" + port,
