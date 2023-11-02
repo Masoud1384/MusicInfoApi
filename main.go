@@ -33,6 +33,7 @@ func main() {
 	)
 	v1router := chi.NewRouter()
 	v1router.Get("/testget", responseHealth)
+	v1router.HandleFunc("/error", responseError400)
 	router.Mount("/v1", v1router)
 
 	srv := &http.Server{
@@ -40,5 +41,4 @@ func main() {
 		Addr:    ":" + port,
 	}
 	srv.ListenAndServe()
-
 }

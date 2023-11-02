@@ -17,3 +17,15 @@ func jsonmarshalhelper(h http.ResponseWriter, code int, data interface{}) {
 	h.WriteHeader(code)
 	h.Write(mdata)
 }
+
+func errorhandleraction(h http.ResponseWriter, code int, msg string) {
+	if code > 499 {
+		log.Println("something went wrong with the server , status code error: ", code)
+	}
+	type customerror struct {
+		Error string `json:"error"`
+	}
+	jsonmarshalhelper(h, code, customerror{
+		msg,
+	})
+}
